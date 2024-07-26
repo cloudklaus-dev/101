@@ -1,0 +1,104 @@
+import tkinter as tk
+import random
+
+# Flashcard Dictionary
+flashcards = [
+    {"protocol": "FTP", "definition": "TCP 20 (Data), 21 (Control)\nFile Transfer Protocol - for transferring files."},
+    {"protocol": "SSH", "definition": "TCP 22\nSecure Shell - for secure remote access."},
+    {"protocol": "SFTP", "definition": "TCP 22\nSecure File Transfer Protocol - for secure file transfers."},
+    {"protocol": "Telnet", "definition": "TCP 23\nTelnet - for unsecure remote access."},
+    {"protocol": "SMTP", "definition": "TCP 25\nSimple Mail Transfer Protocol - for sending emails."},
+    {"protocol": "DNS", "definition": "UDP/TCP 53\nDomain Name System - for resolving domain names."},
+    {"protocol": "DHCP", "definition": "UDP 67 (Server), 68 (Client)\nDynamic Host Control Protocol - for autoconfiguration of hosts."},
+    {"protocol": "TFTP", "definition": "UDP 69\nTrivial File Transfer Protocol - for quick, trivial file transfers."},
+    {"protocol": "HTTP", "definition": "TCP 80\nHyperText Transfer Protocol - for web browsing."},
+    {"protocol": "POP3", "definition": "TCP 110\nPost Office Protocol - for receiving emails (unsecure)."},
+    {"protocol": "NTP", "definition": "UDP 123\nNetwork Time Protocol - for time synchronization."},
+    {"protocol": "IMAP", "definition": "TCP 143\nInternet Message Access Protocol - for receiving emails (unsecure)."},
+    {"protocol": "SNMP", "definition": "UDP 161 (requests), UDP 162 (Trap)\nSimple Network Management Protocol - for network management."},
+    {"protocol": "LDAP", "definition": "TCP 389\nLightweight Directory Access Protocol - for directory services."},
+    {"protocol": "HTTPS", "definition": "TCP 443\nHyperText Transfer Protocol Secure - for secure web browsing."},
+    {"protocol": "SMB", "definition": "TCP 445\nServer Message Block - for Windows file and printer sharing."},
+    {"protocol": "Syslog", "definition": "UDP 514\nSyslog - for log aggregation."},
+    {"protocol": "SMTPS", "definition": "TCP 587\nSimple Mail Transfer Protocol Secure - for secure sending of emails."},
+    {"protocol": "LDAPS", "definition": "TCP 636\nLightweight Directory Access Protocol Secure - for secure directory services."},
+    {"protocol": "IMAPS", "definition": "TCP 993\nInternet Message Access Protocol Secure - for secure receiving of emails."},
+    {"protocol": "POP3S", "definition": "TCP 995\nPost Office Protocol Secure - for secure receiving of emails."},
+    {"protocol": "SQL", "definition": "TCP 1433\nStructured Query Language - for database communication."},
+    {"protocol": "SQLnet", "definition": "TCP 1521\nStructured Query Language Oracle - for Oracle DB communication."},
+    {"protocol": "MySQL", "definition": "TCP 3306\nStructured Query Language - for MySQL DB communication."},
+    {"protocol": "RDP", "definition": "TCP 3389\nRemote Desktop Protocol - for Windows remote access."},
+    {"protocol": "SIP", "definition": "TCP/UDP 5060\nSession Initiation Protocol - for VoIP and video calls."},
+]
+
+# Hauptfenster
+window = tk.Tk()
+window.title("Flashcards")
+window.geometry("400x300")
+
+current_index = 0
+showing_protocol = True
+
+# Label, was entweder den protocol oder die Definition aus dem dictionary anzeigt
+flashcard_label = tk.Label(window, text="", font=("Helvetica", 16), wraplength=350)
+flashcard_label.pack(expand=True)
+
+def show_protocol():
+    # Protokoll anzeigen
+    global showing_protocol
+    flashcard_label.config(text=flashcards[current_index]["protocol"])
+    showing_protocol = True
+
+def show_definition():
+    #Portnummer und definition anzeigen
+    global showing_protocol
+    flashcard_label.config(text=flashcards[current_index]["definition"])
+    showing_protocol = False
+
+def next_flashcard():
+    #naechste Karte
+    global current_index, showing_protocol
+    current_index = (current_index + 1) % len(flashcards)
+    showing_protocol = True
+    show_protocol()
+
+def previous_flashcard():
+    #vorherige Karte
+    global current_index, showing_protocol
+    current_index = (current_index - 1) % len(flashcards)
+    showing_protocol = True
+    show_protocol()
+
+def flip_flashcard(event):
+    #Karte umdrehen bei Klick
+    if showing_protocol:
+        show_definition()
+    else:
+        show_protocol()
+
+def shuffle_flashcards():
+    #Karten randomisieren
+    global current_index
+    random.shuffle(flashcards)
+    current_index = 0
+    show_protocol()
+
+# Knöpfe (courtesy of Claude)
+button_frame = tk.Frame(window)
+button_frame.pack(side=tk.BOTTOM, pady=10)
+
+next_button = tk.Button(button_frame, text="Next", command=next_flashcard)
+next_button.pack(side=tk.LEFT)
+
+prev_button = tk.Button(button_frame, text="Previous", command=previous_flashcard)
+prev_button.pack(side=tk.LEFT)
+
+shuffle_button = tk.Button(button_frame, text="Shuffle", command=shuffle_flashcards)
+shuffle_button.pack(side=tk.LEFT)
+
+# Klick event auf die Mitte der Karte
+flashcard_label.bind("<Button-1>", flip_flashcard)
+
+show_protocol()
+
+window.mainloop()
